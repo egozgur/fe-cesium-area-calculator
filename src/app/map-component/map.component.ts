@@ -19,7 +19,7 @@ export class MapComponent implements OnInit {
 
     // @ts-ignore
     constructor(private el: ElementRef, private cesiumService: CesiumService) {
-        this.cesiumService = cesiumService;
+        this.cesiumService = cesiumService; // Initialize the CesiumService instance
     }
 
     // Initializes the Cesium viewer and runs setupClickEvent function.
@@ -33,7 +33,7 @@ export class MapComponent implements OnInit {
             fullscreenButton: false,
             animation: false,
         });
-        this.setupClickEvent();
+        this.setupClickEvent(); // Set up click event after viewer initialization
     }
 
     // Sets up the click event to capture user-defined rectangle.
@@ -52,8 +52,9 @@ export class MapComponent implements OnInit {
                         this.topLeft = cartesian;
                     } else if (!this.bottomRight) {
                         this.bottomRight = cartesian;
-
-                        this.cesiumService.createRectangle(this.viewer, this.topLeft, this.bottomRight); // Call function to create rectangle
+                        // Call function to create rectangle using CesiumService
+                        this.cesiumService.createRectangle(this.viewer, this.topLeft, this.bottomRight);
+                        //for avoiding errors when clearArea function calls, reset corner points
                         this.bottomRight = undefined
                         this.topLeft = undefined
                     }

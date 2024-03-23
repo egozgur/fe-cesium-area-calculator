@@ -12,6 +12,7 @@ export class CesiumService {
 
   constructor() { }
 
+  // Creates a rectangle entity on the map based on user-defined coordinates.
   createRectangle(viewer: Viewer, topLeft: Cartesian3, bottomRight: Cartesian3): void {
     this.viewer = viewer;
     if (topLeft && bottomRight) {
@@ -54,7 +55,6 @@ export class CesiumService {
   /*  Calculates the area of the user-defined rectangle in square kilometers.
   @returns The area of the rectangle in square kilometers.
   @throws {Error} Thrown when the corners are not defined.*/
-
   calculateArea(): string {
     if (this.topLeft && this.bottomRight) {
       // Gets cartographic coordinates of the top-left and bottom-right corners

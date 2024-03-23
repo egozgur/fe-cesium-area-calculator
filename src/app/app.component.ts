@@ -16,6 +16,7 @@ export class AppComponent {
     constructor() {
     }
 
+    // Function to set the calculated area
     setArea(area: string) {
         this.area = area;
     }

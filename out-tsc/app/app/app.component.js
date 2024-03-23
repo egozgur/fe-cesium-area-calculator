@@ -7,6 +7,7 @@ import { MapComponent } from "./map-component/map.component";
 let AppComponent = class AppComponent {
     constructor() {
     }
+    // Function to set the calculated area
     setArea(area) {
         this.area = area;
     }
