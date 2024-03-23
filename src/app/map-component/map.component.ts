@@ -54,6 +54,8 @@ export class MapComponent implements OnInit {
                         this.bottomRight = cartesian;
 
                         this.cesiumService.createRectangle(this.viewer, this.topLeft, this.bottomRight); // Call function to create rectangle
+                        this.bottomRight = undefined
+                        this.topLeft = undefined
                     }
                 } else {
                     console.warn("Unable to obtain world coordinates.");

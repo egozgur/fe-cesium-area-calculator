@@ -1,5 +1,5 @@
 import { __decorate } from "tslib";
-import { Component, Input, ViewChild } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CesiumModule } from "./app.module";
 import { ButtonComponent } from "./button-component/button.component";
 import { CommonModule } from "@angular/common";
@@ -9,15 +9,11 @@ let AppComponent = class AppComponent {
     }
     setArea(area) {
         this.area = area;
-        this.MapComponent.initCesium();
     }
 };
 __decorate([
     Input()
 ], AppComponent.prototype, "area", void 0);
-__decorate([
-    ViewChild(MapComponent)
-], AppComponent.prototype, "MapComponent", void 0);
 AppComponent = __decorate([
     Component({
         selector: "app-root",
