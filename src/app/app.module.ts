@@ -1,13 +1,10 @@
-// cesium.module.ts
-
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CesiumClickHandler } from './cesiumComponents/cesium.click.handler';
-import {CesiumDirective} from "./cesiumComponents/cesium.directive";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { CesiumDirective } from "./cesiumComponents/cesium.directive";
 
 @NgModule({
-    declarations: [CesiumClickHandler], // Direktif ve Handler'ı burada bildirin
+    declarations: [],// Declarations array is empty because we only export CesiumDirective
     imports: [CommonModule, CesiumDirective],
-    exports: [CesiumClickHandler] // Bu direktif ve handler'ı başka modüllerde kullanabilmek için dışa aktarın
+    exports: [],// We're not exporting anything from this module
 })
 export class CesiumModule {}

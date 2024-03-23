@@ -1,16 +1,14 @@
-// cesium.module.ts
 import { __decorate } from "tslib";
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CesiumClickHandler } from './cesiumComponents/cesium.click.handler';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { CesiumDirective } from "./cesiumComponents/cesium.directive";
 let CesiumModule = class CesiumModule {
 };
 CesiumModule = __decorate([
     NgModule({
-        declarations: [CesiumClickHandler],
+        declarations: [],
         imports: [CommonModule, CesiumDirective],
-        exports: [CesiumClickHandler] // Bu direktif ve handler'ı başka modüllerde kullanabilmek için dışa aktarın
+        exports: [], // We're not exporting anything from this module
     })
 ], CesiumModule);
 export { CesiumModule };

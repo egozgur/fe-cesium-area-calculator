@@ -1,17 +1,23 @@
 import { __decorate } from "tslib";
-import { Directive } from '@angular/core';
-import { Viewer, ScreenSpaceEventType } from 'cesium';
+import { Directive } from "@angular/core";
 import * as Cesium from "cesium";
+import { ScreenSpaceEventType, Viewer } from "cesium";
+// This directive handles the integration of CesiumJS map into Angular applications.
 let CesiumDirective = class CesiumDirective {
     constructor(el) {
         this.el = el;
     }
+    // Initializes the Cesium viewer and runs setupClickEvent function.
     ngOnInit() {
         this.viewer = new Viewer(this.el.nativeElement, {
             timeline: false,
             fullscreenButton: false,
-            animation: false // saat ayarını devre dışı bırak
+            animation: false,
         });
+        this.setupClickEvent();
+    }
+    // Sets up the click event to capture user-defined rectangle.
+    setupClickEvent() {
         this.viewer.screenSpaceEventHandler.setInputAction((clickEvent) => {
             const clickedPosition = clickEvent.position;
             if (clickedPosition) {
@@ -22,88 +28,97 @@ let CesiumDirective = class CesiumDirective {
                     }
                     else if (!this.bottomRight) {
                         this.bottomRight = cartesian;
-                        this.createRectangle(); //dikdörtgenyapma fonksiyonunu çağır
+                        this.createRectangle(); // Call function to create rectangle
                     }
                 }
                 else {
-                    console.warn('Dünya koordinatları alınamadı.');
+                    console.warn("Unable to obtain world coordinates.");
                 }
             }
         }, ScreenSpaceEventType.LEFT_CLICK);
     }
+    // Creates a rectangle entity on the map based on user-defined coordinates.
     createRectangle() {
         if (this.topLeft && this.bottomRight) {
-            // Sol üst ve sağ alt köşeleri al
+            //Gets cartographic coordinates of top left and bottom right corners
             const topLeftCartographic = Cesium.Cartographic.fromCartesian(this.topLeft);
             const bottomRightCartographic = Cesium.Cartographic.fromCartesian(this.bottomRight);
-            // Dikdörtgenin köşelerini tanımla
+            //Define rectangle corners
             const rectangleProperty = new Cesium.CallbackProperty(() => {
                 return Cesium.Rectangle.fromCartographicArray([
                     topLeftCartographic,
-                    bottomRightCartographic
+                    bottomRightCartographic,
                 ]);
             }, false);
-            // Dikdörtgenin malzemesini belirle
-            const materialProperty = new Cesium.ColorMaterialProperty(Cesium.Color.fromCssColorString('rgba(238, 75, 43, 0.5)') // Örnek olarak yarı saydam beyaz renk
+            //Sets rectangle material
+            const materialProperty = new Cesium.ColorMaterialProperty(Cesium.Color.fromCssColorString("rgba(238, 75, 43, 0.5)") // Örnek olarak yarı saydam beyaz renk
             );
-            // Dikdörtgen için varlık oluştur
+            //Creates entity for the rectangle
             const rectangleEntity = new Cesium.Entity({
                 rectangle: {
                     coordinates: rectangleProperty,
                     material: materialProperty,
-                    height: 0 // Yükseklik sıfır olarak ayarlandı, düz bir dikdörtgen oluşturur
-                }
+                    height: 0,
+                },
             });
-            // Dikdörtgen varlığını ekrana ekleyin
+            // Add rectangle entity to the viewer
             this.viewer.entities.add(rectangleEntity);
         }
-        // Köşeleri sıfırla
-        //console.log("solustkose",this.topLeft,"sagaltkose",this.bottomRight)
-        //this.calculateArea()//hesaplama fonksiyonunu çağır
-        //this.topLeft = undefined;
-        //this.bottomRight = undefined;
     }
+    /*  Calculates the area of the user-defined rectangle in square kilometers.
+    @returns The area of the rectangle in square kilometers.
+    @throws {Error} Thrown when the corners are not defined.*/
     calculateArea() {
         if (this.topLeft && this.bottomRight) {
-            // Sol üst ve sağ alt köşeleri al
+            // Gets cartographic coordinates of the top-left and bottom-right corners
             const topLeftCartographic = Cesium.Cartographic.fromCartesian(this.topLeft);
             const bottomRightCartographic = Cesium.Cartographic.fromCartesian(this.bottomRight);
-            // Sol üst ve sağ alt noktaları düzlem koordinatlarına dönüştür
+            // Projects the top-left and bottom-right points to plane coordinates
             const topLeftProjected = Cesium.Cartographic.toCartesian(topLeftCartographic);
             const bottomRightProjected = Cesium.Cartographic.toCartesian(bottomRightCartographic);
-            // Genişlik ve yüksekliği hesapla (metre cinsinden)
+            // Calculate width and height (in meters)
             const width = Math.abs(topLeftProjected.x - bottomRightProjected.x);
             const height = Math.abs(topLeftProjected.y - bottomRightProjected.y);
-            // Alanı hesapla (metre kare cinsinden)
+            // Calculate area (in square meters)
             const areaSquareMeters = width * height;
-            // Alanı kilometrekare cinsine dönüştür ve biçimlendir
+            // Convert area to square kilometers and format it
             const areaSquareKilometers = areaSquareMeters / 1000000;
-            let formattedArea = areaSquareKilometers.toLocaleString("tr-TR");
-            // Alanın son üç hanesini sil
-            const index = formattedArea.lastIndexOf(",");
-            if (index !== -1) {
-                formattedArea = formattedArea.substring(0, index);
+            if (areaSquareKilometers > 1) {
+                let formattedArea = areaSquareKilometers.toString();
+                // Remove the last three digits of the area
+                const index = formattedArea.lastIndexOf(".");
+                if (index !== -1) {
+                    formattedArea = formattedArea.substring(0, index);
+                }
+                return formattedArea + " km^2";
             }
-            // Sonucu ekrana yazdır
-            console.log("Dikdörtgenin alanı:", formattedArea, "km^2");
-            return formattedArea;
+            else {
+                let formattedArea = areaSquareMeters.toString();
+                // Remove the last three digits of the area
+                const index = formattedArea.lastIndexOf(".");
+                if (index !== -1) {
+                    formattedArea = formattedArea.substring(0, index);
+                }
+                return formattedArea + " m^2";
+            }
         }
         else {
-            console.warn("Alan hesaplanamıyor: Köşeler belirlenmemiş.");
+            console.warn("Area cannot be calculated: Corners are not defined.");
             return "0";
         }
     }
+    //Clears the drawn rectangle from the map and resets the corner points.
     clearArea() {
-        // Dikdörtgeni ekran üzerinden kaldır
+        // Remove rectangle from the map
         this.viewer.entities.removeAll();
-        // Köşeleri sıfırla
+        // Reset corner points
         this.topLeft = undefined;
         this.bottomRight = undefined;
     }
 };
 CesiumDirective = __decorate([
     Directive({
-        selector: '[cesiumDirective]',
+        selector: "[cesiumDirective]",
         standalone: true,
     })
 ], CesiumDirective);

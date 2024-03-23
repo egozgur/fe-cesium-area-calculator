@@ -1,27 +1,35 @@
 import { __decorate } from "tslib";
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from "@angular/core";
 import { CesiumDirective } from "../cesiumComponents/cesium.directive";
 let ButtonComponent = class ButtonComponent {
     constructor() { }
     ngOnInit() { }
-    /* public createRectangle(): void{
-        console.log("rectangle çıktısı")
-        //CesiumDirective. cesiumDirective.createRectangle()
-        this.cesiumDirective.createRectangle(); // CesiumDirective içindeki fonksiyonu çağır
-    
-      }
-    */
+    // Function to calculate the area using the CesiumDirective
     calculateArea() {
-        this.cesiumDirective.calculateArea(); // CesiumDirective içindeki fonksiyonu çağır
-        //this.area = calculated;
+        if (this.cesiumDirective) {
+            // Calculate the area using the CesiumDirective function and update the area property
+            this.area = this.cesiumDirective.calculateArea();
+        }
+        else {
+            // Log an error if the CesiumDirective instance is not available
+            console.error('CesiumDirective not available.');
+        }
     }
-    clear() {
-        this.cesiumDirective.clearArea();
+    // Function to clear the selected area on the map
+    clearArea() {
+        // Ensure that the CesiumDirective instance exists
+        if (this.cesiumDirective) {
+            // Clear the selected area on the map using the CesiumDirective function
+            this.cesiumDirective.clearArea();
+            // Reset the area property
+            this.area = undefined;
+        }
+        else {
+            // Log an error if the CesiumDirective instance is not available
+            console.error('CesiumDirective not available.');
+        }
     }
 };
-__decorate([
-    Input()
-], ButtonComponent.prototype, "name", void 0);
 __decorate([
     Input()
 ], ButtonComponent.prototype, "area", void 0);
@@ -30,13 +38,11 @@ __decorate([
 ], ButtonComponent.prototype, "cesiumDirective", void 0);
 ButtonComponent = __decorate([
     Component({
-        selector: '[appButton]',
+        selector: "[appButton]",
         standalone: true,
-        imports: [
-            CesiumDirective
-        ],
-        templateUrl: './button.component.html',
-        styleUrl: './button.component.css'
+        imports: [CesiumDirective],
+        templateUrl: "./button.component.html",
+        styleUrl: "./button.component.css",
     })
 ], ButtonComponent);
 export { ButtonComponent };

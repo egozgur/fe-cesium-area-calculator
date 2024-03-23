@@ -1,42 +1,44 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {CesiumDirective} from "../cesiumComponents/cesium.directive";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { CesiumDirective } from "../cesiumComponents/cesium.directive";
 
 @Component({
-  selector: '[appButton]',
+  selector: "[appButton]",
   standalone: true,
-  imports: [
-    CesiumDirective
-  ],
-  templateUrl: './button.component.html',
-  styleUrl: './button.component.css'
+  imports: [CesiumDirective], //haritanın ekranda çıkmasını sağlayacak
+  templateUrl: "./button.component.html",
+  styleUrl: "./button.component.css",
 })
-export class ButtonComponent implements OnInit{
-
-  @Input() name: string | undefined
+export class ButtonComponent implements OnInit {
+  // Input property for storing the calculated area
   @Input() area: number | undefined;
 
+  // Reference to the CesiumDirective for interacting with the map functions
   @ViewChild(CesiumDirective) cesiumDirective: any;
 
-  constructor(){}
+  constructor() {}
 
-
-  ngOnInit(){}
-
-
-/* public createRectangle(): void{
-    console.log("rectangle çıktısı")
-    //CesiumDirective. cesiumDirective.createRectangle()
-    this.cesiumDirective.createRectangle(); // CesiumDirective içindeki fonksiyonu çağır
-
+  ngOnInit() {}
+  // Function to calculate the area using the CesiumDirective
+  calculateArea() {
+    if (this.cesiumDirective) {
+      // Calculate the area using the CesiumDirective function and update the area property
+      this.area = this.cesiumDirective.calculateArea();
+    } else {
+      // Log an error if the CesiumDirective instance is not available
+      console.error('CesiumDirective not available.');
+    }
   }
-*/
-  calculateArea(){
-    this.cesiumDirective.calculateArea(); // CesiumDirective içindeki fonksiyonu çağır
-    //this.area = calculated;
-  }
-
-  clear(){
-    this.cesiumDirective.clearArea();
+  // Function to clear the selected area on the map
+  clearArea() {
+    // Ensure that the CesiumDirective instance exists
+    if (this.cesiumDirective) {
+      // Clear the selected area on the map using the CesiumDirective function
+      this.cesiumDirective.clearArea();
+      // Reset the area property
+      this.area = undefined;
+    } else {
+      // Log an error if the CesiumDirective instance is not available
+      console.error('CesiumDirective not available.');
+    }
   }
 }
-

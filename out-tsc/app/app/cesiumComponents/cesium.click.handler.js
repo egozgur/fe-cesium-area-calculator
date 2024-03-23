@@ -5,7 +5,6 @@ let CesiumClickHandler = class CesiumClickHandler {
         this.el = el;
     }
     ngOnInit() {
-        console.log('Viewer:', this.viewer);
     }
 };
 CesiumClickHandler = __decorate([

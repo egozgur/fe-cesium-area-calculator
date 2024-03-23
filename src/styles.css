@@ -3,5 +3,6 @@
 @import "tailwindcss/utilities";
 
 html, body, div[appCesium] {
-  @apply w-full h-full m-0 p-0 overflow-hidden;
+  @apply w-full h-full m-0 p-0 overflow-hidden ;
+
 }
