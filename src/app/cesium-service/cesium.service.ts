@@ -1,64 +1,26 @@
-import {Directive, ElementRef, OnInit} from "@angular/core";
+import { Injectable } from '@angular/core';
 import * as Cesium from "cesium";
-import {Cartesian3, ScreenSpaceEventType, Viewer} from "cesium";
+import {Cartesian3, Viewer} from "cesium";
 
-
-// This directive handles the integration of CesiumJS map into Angular applications.
-@Directive({
-  selector: "[cesiumDirective]",
-  standalone: true,
+@Injectable({
+  providedIn: 'root'
 })
-export class CesiumDirective implements OnInit {
-  private viewer!: Viewer;
-  private topLeft: Cartesian3 | undefined;
+export class CesiumService {
   private bottomRight: Cartesian3 | undefined;
-  constructor(private el: ElementRef) {}
+  private topLeft: Cartesian3 | undefined;
+  private viewer: Viewer | undefined;
 
-// Initializes the Cesium viewer and runs setupClickEvent function.
-  ngOnInit(): void {
-    this.viewer = new Viewer(this.el.nativeElement, {
-      timeline: false,
-      fullscreenButton: false,
-      animation: false,
-    });
-    this.setupClickEvent();
-  }
+  constructor() { }
 
-// Sets up the click event to capture user-defined rectangle.
-  setupClickEvent(): void {
-    this.viewer.screenSpaceEventHandler.setInputAction((clickEvent: any) => {
-      const clickedPosition = clickEvent.position;
-
-      if (clickedPosition) {
-        const cartesian = this.viewer.scene.camera.pickEllipsoid(
-            clickedPosition,
-            this.viewer.scene.globe.ellipsoid
-        );
-
-        if (cartesian) {
-          if (!this.topLeft) {
-            this.topLeft = cartesian;
-          } else if (!this.bottomRight) {
-            this.bottomRight = cartesian;
-
-            this.createRectangle(); // Call function to create rectangle
-          }
-        } else {
-          console.warn("Unable to obtain world coordinates.");
-        }
-      }
-    }, ScreenSpaceEventType.LEFT_CLICK);
-  }
-
-// Creates a rectangle entity on the map based on user-defined coordinates.
-  createRectangle(): void {
-    if (this.topLeft && this.bottomRight) {
+  createRectangle(viewer: Viewer, topLeft: Cartesian3, bottomRight: Cartesian3): void {
+    this.viewer = viewer;
+    if (topLeft && bottomRight) {
       //Gets cartographic coordinates of top left and bottom right corners
       const topLeftCartographic = Cesium.Cartographic.fromCartesian(
-          this.topLeft
+          topLeft
       );
       const bottomRightCartographic = Cesium.Cartographic.fromCartesian(
-          this.bottomRight
+          bottomRight
       );
 
       //Define rectangle corners
@@ -82,15 +44,16 @@ export class CesiumDirective implements OnInit {
           height: 0,
         },
       });
-
+      this.bottomRight = bottomRight;
+      this.topLeft = topLeft;
       // Add rectangle entity to the viewer
-      this.viewer.entities.add(rectangleEntity);
+      viewer.entities.add(rectangleEntity);
     }
   }
 
-/*  Calculates the area of the user-defined rectangle in square kilometers.
-@returns The area of the rectangle in square kilometers.
-@throws {Error} Thrown when the corners are not defined.*/
+  /*  Calculates the area of the user-defined rectangle in square kilometers.
+  @returns The area of the rectangle in square kilometers.
+  @throws {Error} Thrown when the corners are not defined.*/
 
   calculateArea(): string {
     if (this.topLeft && this.bottomRight) {
@@ -126,7 +89,7 @@ export class CesiumDirective implements OnInit {
         if (index !== -1) {
           formattedArea = formattedArea.substring(0, index);
         }
-        return formattedArea + " km^2" ;
+        return formattedArea + " km^2";
       } else {
         let formattedArea = areaSquareMeters.toString();
         // Remove the last three digits of the area
@@ -134,7 +97,7 @@ export class CesiumDirective implements OnInit {
         if (index !== -1) {
           formattedArea = formattedArea.substring(0, index);
         }
-        return formattedArea + " m^2" ;
+        return formattedArea + " m^2";
       }
 
 
@@ -147,9 +110,12 @@ export class CesiumDirective implements OnInit {
 //Clears the drawn rectangle from the map and resets the corner points.
   clearArea(): void {
     // Remove rectangle from the map
-    this.viewer.entities.removeAll();
-    // Reset corner points
-    this.topLeft = undefined;
-    this.bottomRight = undefined;
+    if (this.viewer != undefined) {
+      this.viewer.entities.removeAll();
+      this.viewer.dataSources.removeAll();
+      // Reset corner points
+      this.topLeft = undefined;
+      this.bottomRight = undefined;
+    }
   }
 }

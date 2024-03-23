@@ -1,10 +1,11 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { CesiumDirective } from "./cesiumComponents/cesium.directive";
+import { ButtonComponent } from "./button-component/button.component";
+import {MapComponent} from "./map-component/map.component";
 
 @NgModule({
-    declarations: [],// Declarations array is empty because we only export CesiumDirective
-    imports: [CommonModule, CesiumDirective],
-    exports: [],// We're not exporting anything from this module
+    declarations: [],
+    imports: [CommonModule, CommonModule, ButtonComponent, MapComponent],
+    exports: []// We're not exporting anything from this module,
 })
 export class CesiumModule {}

@@ -1,9 +1,10 @@
 import { __decorate } from "tslib";
 import { Component, Input, ViewChild } from "@angular/core";
-import { CesiumDirective } from "../cesiumComponents/cesium.directive";
+import { CesiumDirective } from "../cesium-component/cesium.directive";
+import { CommonModule } from "@angular/common";
 let ButtonComponent = class ButtonComponent {
-    constructor() { }
-    ngOnInit() { }
+    constructor() {
+    }
     // Function to calculate the area using the CesiumDirective
     calculateArea() {
         if (this.cesiumDirective) {
@@ -38,11 +39,11 @@ __decorate([
 ], ButtonComponent.prototype, "cesiumDirective", void 0);
 ButtonComponent = __decorate([
     Component({
-        selector: "[appButton]",
+        selector: "app-button",
         standalone: true,
-        imports: [CesiumDirective],
+        imports: [CommonModule, CesiumDirective],
         templateUrl: "./button.component.html",
-        styleUrl: "./button.component.css",
+        styleUrl: "./button.component.css"
     })
 ], ButtonComponent);
 export { ButtonComponent };

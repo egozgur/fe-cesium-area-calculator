@@ -1,2 +1,10 @@
-<div class="container">
+<div class="cesium">
+    <div class="button-group">
+            <app-button (newAreaEvent)="setArea($event)" title="Calculate Area"></app-button>
+            <app-button (newAreaEvent)="setArea($event)" title="Clear Area"></app-button>
+            <p class="p-calculate-field">Calculated Area: {{area}}</p>
+    </div>
+    <div class="map">
+        <cesium-map></cesium-map>
+    </div>
 </div>

@@ -2,7 +2,29 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-html, body, div[appCesium] {
-  @apply w-full h-full m-0 p-0 overflow-hidden ;
+html, body {
+  @apply w-full h-full min-h-full m-0 ;
+}
+.button-group {
+  @apply flex justify-center bg-black
+}
 
+.cesium{
+  @apply w-full h-full min-h-full m-0 ;
+}
+
+.app-root{
+  @apply block h-full;
+}
+
+.main, .map{
+  @apply h-full;
+}
+
+.button-blue{
+  @apply m-2 bg-blue-500 text-white py-3 px-6 rounded-lg shadow w-64
+}
+
+.p-calculate-field {
+  @apply m-2 bg-blue-500 text-white py-3 px-6 rounded-lg
 }
